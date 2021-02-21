@@ -1,8 +1,14 @@
 import './App.css';
 
+import Header from './components/Header/Header'
+import Map from './components/Map/Map'
+
 function App() {
   return (
-    <h1>Hello</h1>
+    <div className="app">
+      <Header />
+      <Map />
+    </div>
   );
 }
 
