@@ -1,4 +1,7 @@
-import React from 'react'
+import React, { useContext } from 'react'
+
+import { getIPInfo } from '../../api'
+import { useDataLayerValue } from '../../DataLayer'
 
 import patternBG from '../../assets/images/pattern-bg.png'
 // import arrowRightIcon from '../../assets/icons/icon-arrow.svg'
@@ -7,9 +10,11 @@ import './header.css'
 
 const Header = () => {
 
-    const handleSubmit = () => {
-        console.log("Hello there")
+    const handleSubmit = async () => {
+        getIPInfo('192.212.174.101')
     }
+
+    const [{ ip, location, timezone, isp, lng, lat }, dispatch] = useDataLayerValue()
 
     return (
         <header className="header" style={{ background: `url('${patternBG}')`, backgroundRepeat: 'no-repeat', backgroundSize: 'cover' }}>
@@ -18,30 +23,29 @@ const Header = () => {
                 <div className="header__searchwrap">
                     <input type="text" placeholder="Search for any IP Address or Domain" required />
                     <button onClick={handleSubmit}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="11" height="14"><path fill="none" stroke="#FFF" stroke-width="3" d="M2 1l6 6-6 6"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="11" height="14"><path fill="none" stroke="#FFF" strokeWidth="3" d="M2 1l6 6-6 6"/></svg>
                     </button>
                 </div>
             </div>
-            <div class="header__results">
-                <div class="header__results--ipaddress">
+            <div className="header__results">
+                <div className="header__results--ipaddress">
                     <h3>ip address</h3>
-                    <p>192.212.174.101</p>
+                    <p>{ ip }</p>
                 </div>
 
-                <div class="header__results--location">
+                <div className="header__results--location">
                     <h3>location</h3>
-                    <p>Brooklyn, NY 10001</p>
+                    <p>{ location }</p>
                 </div>
 
-                <div class="header__results--timezone">
+                <div className="header__results--timezone">
                     <h3>timezone</h3>
-                    <p>UTC -05:00</p>
+                    <p>{ timezone }</p>
                 </div>
 
-                <div class="header__results--isp">
+                <div className="header__results--isp">
                     <h3>isp</h3>
-                    <p>SpaceX</p>
-                    <p>Starlink</p>
+                    <p>{ isp }</p>
                 </div>
             </div>
         </header>

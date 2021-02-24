@@ -8,6 +8,8 @@ import iconShadow from 'leaflet/dist/images/marker-shadow.png'
 import 'leaflet/dist/leaflet.css'
 import './map.css'
 
+import { useDataLayerValue } from '../../DataLayer'
+
 let DefaultIcon = L.icon({
     iconUrl: icon,
     iconShadow: iconShadow
@@ -15,9 +17,13 @@ let DefaultIcon = L.icon({
 
 L.Marker.prototype.options.icon = DefaultIcon
 
-const position = [43.1614, 16.6931];
 
 const Map = () => {
+
+    const [{lng, lat, dispatch}] = useDataLayerValue()
+
+    let position = [lat, lng];
+
     return(
         <MapContainer center={position} zoom={13} scrollWheelZoom={false}>
             <TileLayer
