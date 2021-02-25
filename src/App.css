@@ -19,7 +19,18 @@ body {
 
 body, html {
     width: 100vw;
-    overflow-x: hidden;
+    height: 100%;
+    overflow: hidden;
     font-family: 'Rubik', sans-serif;
-    position: relative;
+    position: absolute;
+}
+
+@media only screen and (max-width: 768px) {
+    html {
+        font-size: 14px;
+    }
+
+    html,body {
+        height: 100%;
+    }
 }

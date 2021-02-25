@@ -1,7 +1,22 @@
-.leaflet-container {
-    width: 100%; 
+.map__container {
+    width: 100%;
     height: 65vh;
-    max-height: 65%;
+    position: relative;
+}
+
+.leaflet-container {
+    position: absolute !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    width: 100% !important;
 }
 
 .leaflet-control-container { position: absolute; right: 56px; bottom: 80px; }
+
+@media only screen and (max-width: 768px) {
+    .map__container {
+        width: 100%;
+        height: 60vh;
+        position: relative;
+    }
+}

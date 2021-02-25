@@ -3,11 +3,12 @@
     height: 35vh;
     max-height: 35%;
     position: relative;
+    padding: .5rem 0;
 }
 
 .header__container {
-    width: inherit;
-    height: inherit;
+    width: 100%;
+    height: 35vh;
     display: flex;
     justify-content: flex-start;
     align-items: center;
@@ -23,16 +24,15 @@
 }
 
 .header__searchwrap {
-    width: 100%;
+    width: 90%;
     margin: 0 auto;
     display: flex;
     justify-content: center;
 }
 
 .header__searchwrap input[type=text] {
-    width: 45%;
-    max-width: 800px;
-    min-width: 300px;
+    width: 90%;
+    max-width: 580px;
     height: 2.3rem;
     outline-color: transparent;
     border: none;
@@ -104,15 +104,19 @@
 
 @media only screen and (max-width: 768px) {
 
-    html {
-        font-size: 14px;
+    .header {
+        height: 40vh;
     }
 
     .header__results {
         flex-flow: column;
+        align-items:center;
+        text-align: center;
+        width: 90%;
     }
 
     .header__results > *:not(:last-child) {
         border-right: none;
+        margin-bottom: 1.5rem;
     }
 }

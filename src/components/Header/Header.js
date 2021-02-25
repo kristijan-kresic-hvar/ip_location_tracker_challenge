@@ -1,5 +1,7 @@
 import React, { useContext, useState } from 'react'
 
+import { truncate } from '../../helpers'
+
 import { getIPInfo } from '../../api'
 import { useDataLayerValue } from '../../DataLayer'
 
@@ -12,7 +14,10 @@ const Header = () => {
 
     // extract stuff from the global state, add the dispatch action to change them afterwards
     const [{ isLoading, ip, location, timezone, isp, lng, lat }, dispatch] = useDataLayerValue()
+
     const [searchValue, setSearchValue] = useState('')
+    const [isFocused, setIsFocused] = useState(false)
+    const [windowWidth, setWindowWidth] = useState(window.innerWidth)
 
     const handleSubmit = async () => {
 
@@ -61,18 +66,27 @@ const Header = () => {
         setSearchValue(e.target.value)
     }
 
+    const handleFocus = () => {
+        if(windowWidth >= '768') return
+        setIsFocused(true)
+    }
+
+    const handleBlur = () => {
+        setIsFocused(false)
+    }
+
     return (
         <header className="header" style={{ background: `url('${patternBG}')`, backgroundRepeat: 'no-repeat', backgroundSize: 'cover' }}>
             <div className="header__container">
                 <h1>IP Address Tracker</h1>
                 <div className="header__searchwrap">
-                    <input onChange={handleChange} type="text" placeholder="Search for any IP Address or Domain" required />
+                    <input onBlur={handleBlur} onFocus={handleFocus} onChange={handleChange} type="text" placeholder="Search for any IP Address or Domain" required />
                     <button onClick={() => handleSubmit()}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="11" height="14"><path fill="none" stroke="#FFF" strokeWidth="3" d="M2 1l6 6-6 6"/></svg>
                     </button>
                 </div>
             </div>
-            <div className="header__results">
+            {!isFocused ? <div className="header__results">
                 <div className="header__results--ipaddress">
                     <h3>ip address</h3>
                     <p>{ isLoading ? 'N/A': ip }</p>
@@ -90,9 +104,9 @@ const Header = () => {
 
                 <div className="header__results--isp">
                     <h3>isp</h3>
-                    <p>{ isLoading ? 'N/A' : isp }</p>
+                    <p>{ isLoading ? 'N/A' : truncate(isp, 30) }</p>
                 </div>
-            </div>
+            </div> : '' }
         </header>
     )
 }
