@@ -20,10 +20,9 @@ let DefaultIcon = L.icon({
 
 L.Marker.prototype.options.icon = DefaultIcon
 
-
 const Map = () => {
 
-    const [{lng, lat, dispatch}] = useDataLayerValue()
+    const [{lng, lat, isLoading}] = useDataLayerValue()
     let position = [lat, lng];
 
     const lottieOptions = {
@@ -35,9 +34,14 @@ const Map = () => {
           }
     }
 
-    return(
+    return (
         <>
-            {/* <MapContainer center={position} zoom={13} scrollWheelZoom={false}>
+            {isLoading ? <Lottie 
+                options={lottieOptions}
+                height={'65vh'}
+                width={'100%'}
+                isClickToPauseDisabled={true}
+            /> : <MapContainer center={position} zoom={13} scrollWheelZoom={false}>
                 <TileLayer
                     attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -47,16 +51,10 @@ const Map = () => {
                         IP approximate location
                     </Popup>
                 </Marker>
-            </MapContainer> */}
-
-            <Lottie 
-                options={lottieOptions}
-                height={'65vh'}
-                width={'100%'}
-                isClickToPauseDisabled={true}
-            />
+            </MapContainer>}
         </>
     )
+        
 }
 
 export default Map
