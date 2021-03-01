@@ -2,7 +2,6 @@
     width: 100%;
     height: 65vh;
     position: relative;
-    z-index: -1;
 }
 
 .leaflet-container {
@@ -10,6 +9,7 @@
     top: 0 !important;
     bottom: 0 !important;
     width: 100% !important;
+    z-index: 1;
 }
 
 .leaflet-control-container { position: absolute; right: 56px; bottom: 80px; }
