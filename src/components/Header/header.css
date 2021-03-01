@@ -63,7 +63,7 @@
 .header__results {
     width: 80%;
     padding: 1.5rem;
-    z-index: 9999999999999999999999999999999999999;
+    z-index: 999999999999999999999999 !important;
     position: absolute;
     left: 50%;
     bottom: 0;
