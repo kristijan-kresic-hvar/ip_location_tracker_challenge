@@ -40,10 +40,10 @@ body, html {
     }
 }
 
- /* prevent user from using landscape on really small devices */
+ /* prevent user from using landscape on really small devices
  @media (min-device-width: 320px) and (min-device-height: 640px) and (orientation:landscape) {
     
     .alert__container {
         display: block !important;
     }
- }
+ } */
