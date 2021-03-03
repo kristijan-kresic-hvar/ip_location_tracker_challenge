@@ -1,5 +1,8 @@
 import React, { useState } from 'react'
 
+import isValidDomain from 'is-valid-domain'
+import isIp from 'is-ip'
+
 import { truncate, checkIfExists } from '../../helpers'
 
 import { getIPInfo } from '../../api'
@@ -14,7 +17,14 @@ const Header = () => {
     // extract stuff from the global state, add the dispatch action to change them afterwards
     const [{ isLoading, ip, location, timezone, isp, lng, lat }, dispatch] = useDataLayerValue()
 
+    // Input field value
     const [searchValue, setSearchValue] = useState('')
+
+    // user searched terms
+    const [desiredIP, setDesiredIP] = useState('')
+    const [desiredDomain, setDesiredDomain] = useState('')
+
+    // accessibility states
     const [isFocused, setIsFocused] = useState(false)
     const [windowWidth] = useState(window.innerWidth)
 
@@ -25,6 +35,7 @@ const Header = () => {
             return
         }
 
+        // Prevent spamming the same request
         if(searchValue === ip) {
             return
         }
@@ -38,7 +49,7 @@ const Header = () => {
                 isLoading: true
             })
 
-            const data = await getIPInfo(searchValue)
+            const data = await getIPInfo('', searchValue)
 
             // set new data to the global state
             dispatch({
@@ -82,8 +93,6 @@ const Header = () => {
             handleSubmit()
         }
     }
-
-    console.log(searchValue)
 
     return (
         <header className="header" style={{ background: `url('${patternBG}')`, backgroundRepeat: 'no-repeat', backgroundSize: 'cover' }}>
