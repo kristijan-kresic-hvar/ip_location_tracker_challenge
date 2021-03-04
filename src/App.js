@@ -34,10 +34,12 @@ function App() {
     <div className="app">
       <Header />
       <Map />
-      {/* Testing state of toast messages */}
-      <ToastAlert message="There has been an error" />
+
       {/* if the screen is rotated in landscape mode */}
       {isLandscape && <RotateAlert />}
+
+      {/* error handler component */}
+      <ToastAlert />
     </div>
   );
 }

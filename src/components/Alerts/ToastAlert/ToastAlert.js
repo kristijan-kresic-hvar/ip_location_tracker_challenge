@@ -1,18 +1,21 @@
-import React, { useEffect } from 'react'
-import { toast, ToastContainer } from 'react-toastify';
+import React from 'react'
+import { ToastContainer } from 'react-toastify';
 
 import 'react-toastify/dist/ReactToastify.css';
 
-const ToastAlert = ({ message }) => {
-
-    const notify = () => toast(message)
-
-    useEffect(() => {
-        notify()
-    }, [message])
+const ToastAlert = () => {
 
     return (
-        <ToastContainer />
+        <ToastContainer
+            position="bottom-center"
+            autoClose={3000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            draggable
+            limit={3}
+        />
     )
 }
 

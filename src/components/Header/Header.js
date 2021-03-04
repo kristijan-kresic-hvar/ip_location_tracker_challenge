@@ -3,6 +3,8 @@ import React, { useState } from 'react'
 import isValidDomain from 'is-valid-domain'
 import isIp from 'is-ip'
 
+import { toast } from 'react-toastify'
+
 import { truncate, checkIfExists } from '../../helpers'
 
 import { getIPInfo } from '../../api'
@@ -15,28 +17,45 @@ import './header.css'
 const Header = () => {
 
     // extract stuff from the global state, add the dispatch action to change them afterwards
-    const [{ isLoading, ip, location, timezone, isp, lng, lat }, dispatch] = useDataLayerValue()
+    const [{ isLoading, ip, location, timezone, isp, domain }, dispatch] = useDataLayerValue()
 
     // Input field value
     const [searchValue, setSearchValue] = useState('')
-
-    // user searched terms
-    const [desiredIP, setDesiredIP] = useState('')
-    const [desiredDomain, setDesiredDomain] = useState('')
 
     // accessibility states
     const [isFocused, setIsFocused] = useState(false)
     const [windowWidth] = useState(window.innerWidth)
 
+    const toastId = React.useRef(null)
+
     const handleSubmit = async () => {
 
+        // ERROR CHECKING
+
         // if search value is empty please leave the rest of the function
-        if(!searchValue || searchValue.length == 0) {
-            return
+        if(!searchValue || searchValue.length === 0) {
+            if(!toast.isActive(toastId.current)) {
+                toastId.current = toast.error("Please enter something first!")
+              }
+
+              return
         }
 
         // Prevent spamming the same request
-        if(searchValue === ip) {
+        if(searchValue === ip || searchValue === domain) {
+            if(!toast.isActive(toastId.current)) {
+                toastId.current = toast.error('Dont spamm!')
+            }
+
+            return
+        }
+
+        // check for invalid domain or ip address
+        if(!isValidDomain(searchValue) && !isIp(searchValue)) {
+            if(!toast.isActive(toastId.current)) {
+                toastId.current = toast.error('Please enter valid ip or domain address!')
+            }
+
             return
         }
 
@@ -49,19 +68,38 @@ const Header = () => {
                 isLoading: true
             })
 
-            const data = await getIPInfo('', searchValue)
+            // Check to see which data to search by
+            if(isValidDomain(searchValue)) {
+                const data = await getIPInfo('', searchValue)
 
-            // set new data to the global state
-            dispatch({
-                type: 'SET_IP_DATA',
-                ip: checkIfExists(data.data.ip, 'N/A'),
-                location: checkIfExists(data.data.location.city, 'N/A'), 
-                timezone: checkIfExists(data.data.location.timezone, 'N/A'),
-                isp: checkIfExists(data.data.isp, 'N/A'),
-                lng: data.data.location.lng,
-                lat: data.data.location.lat
-            })
+                 // set new data to the global state
+                 dispatch({
+                    type: 'SET_IP_DATA',
+                    ip: checkIfExists(data.data.ip, 'N/A'),
+                    location: checkIfExists(data.data.location.city, 'N/A'), 
+                    timezone: checkIfExists(data.data.location.timezone, 'N/A'),
+                    isp: checkIfExists(data.data.isp, 'N/A'),
+                    lng: data.data.location.lng,
+                    lat: data.data.location.lat,
+                    domain: searchValue
+                })
 
+            } else if(isIp(searchValue)) {
+                const data = await getIPInfo(searchValue, '')
+
+                // set new data to the global state
+                dispatch({
+                    type: 'SET_IP_DATA',
+                    ip: checkIfExists(data.data.ip, 'N/A'),
+                    location: checkIfExists(data.data.location.city, 'N/A'), 
+                    timezone: checkIfExists(data.data.location.timezone, 'N/A'),
+                    isp: checkIfExists(data.data.isp, 'N/A'),
+                    lng: data.data.location.lng,
+                    lat: data.data.location.lat,
+                    domain: ''
+                })
+            }
+            
             // set loading state to false, end of fetching
             dispatch({
                 type: 'SET_LOADING',
@@ -95,6 +133,7 @@ const Header = () => {
     }
 
     return (
+        <>
         <header className="header" style={{ background: `url('${patternBG}')`, backgroundRepeat: 'no-repeat', backgroundSize: 'cover' }}>
             <div className="header__container">
                 <h1>IP Address Tracker</h1>
@@ -127,6 +166,7 @@ const Header = () => {
                 </div>
             </div> : '' }
         </header>
+        </>
     )
 }
 
