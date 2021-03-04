@@ -5,7 +5,8 @@ export const initialState = {
     timezone: 'UTC -05:00',
     isp: 'SpaceX Starlink',
     lng: '-118.07285',
-    lat: '34.08057'
+    lat: '34.08057',
+    domain: ''
 }
 
 const reducer = (state, action) => {
@@ -18,7 +19,8 @@ const reducer = (state, action) => {
                 timezone: action.timezone,
                 isp: action.isp,
                 lng: action.lng,
-                lat: action.lat
+                lat: action.lat,
+                domain: action.domain
             }
             break;
         case 'SET_LOADING':
