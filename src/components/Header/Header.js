@@ -28,6 +28,7 @@ const Header = () => {
 
     const toastId = React.useRef(null)
 
+    // Handle data submit
     const handleSubmit = async () => {
 
         // ERROR CHECKING
@@ -70,7 +71,21 @@ const Header = () => {
 
             // Check to see which data to search by
             if(isValidDomain(searchValue)) {
+
                 const data = await getIPInfo('', searchValue)
+
+                // If there is no data, break the operation
+                if(!data) {
+                    // Set loading to false
+                    dispatch({
+                        type: 'SET_LOADING',
+                        isLoading: false
+                    })
+
+                    toast.info('Nothing found!')
+
+                    return
+                }
 
                  // set new data to the global state
                  dispatch({
@@ -86,6 +101,22 @@ const Header = () => {
 
             } else if(isIp(searchValue)) {
                 const data = await getIPInfo(searchValue, '')
+
+                console.log(data)
+
+                // If there is no data, break the operation
+                if(!data) {
+
+                    // Set loading to false
+                    dispatch({
+                        type: 'SET_LOADING',
+                        isLoading: false
+                    })
+
+                    toast.warn('Nothing found')
+
+                    return
+                }
 
                 // set new data to the global state
                 dispatch({
@@ -112,20 +143,24 @@ const Header = () => {
         }
     }
 
+    // Handle input value change
     const handleChange = (e) => {
         setSearchValue(e.target.value)
     }
     
+    // Handle input focus
     const handleFocus = (e) => {
 
         if(windowWidth >= '768') return
         setIsFocused(true)
     }
 
+    // Handle input unfocus
     const handleBlur = (e) => {
         setIsFocused(false)
     }
 
+    // Handle enter key press
     const handleKeyPress = (e) => {
         if(e.key === 'Enter') {
             handleSubmit()
