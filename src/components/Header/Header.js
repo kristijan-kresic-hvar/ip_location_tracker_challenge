@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import isValidDomain from 'is-valid-domain'
 import isIp from 'is-ip'
@@ -7,7 +7,7 @@ import { toast } from 'react-toastify'
 
 import { truncate, checkIfExists } from '../../helpers'
 
-import { getIPInfo } from '../../api'
+import { getIPInfo, getClientIp } from '../../api'
 import { useDataLayerValue } from '../../DataLayer'
 
 import patternBG from '../../assets/images/pattern-bg.png'
@@ -166,6 +166,45 @@ const Header = () => {
             handleSubmit()
         }
     }
+
+    // Set the initial data to that of a current client device ip address on component ( page load )
+    useEffect(() => {
+       const clientIp = async () => {
+
+            dispatch({
+                type: 'SET_LOADING',
+                isLoading: true
+            })
+
+            const clientIPAddress = await getClientIp()
+
+            const data = await getIPInfo(clientIPAddress)
+
+            try {
+
+                dispatch({
+                    type: 'SET_IP_DATA',
+                    ip: checkIfExists(data.data.ip, 'N/A'),
+                    location: checkIfExists(data.data.location.city, 'N/A'), 
+                    timezone: checkIfExists(data.data.location.timezone, 'N/A'),
+                    isp: checkIfExists(data.data.isp, 'N/A'),
+                    lng: data.data.location.lng,
+                    lat: data.data.location.lat,
+                    domain: null
+                })
+
+                dispatch({
+                    type: 'SET_LOADING',
+                    isLoading: false
+                })
+
+            } catch (e) {
+                console.log(e.message)
+            }
+       }
+
+       clientIp()
+    }, [])
 
     return (
         <>
