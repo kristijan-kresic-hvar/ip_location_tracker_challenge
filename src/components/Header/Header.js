@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import isValidDomain from 'is-valid-domain'
 import isIp from 'is-ip'
@@ -7,7 +7,7 @@ import { toast } from 'react-toastify'
 
 import { truncate, checkIfExists } from '../../helpers'
 
-import { getIPInfo } from '../../api'
+import { getIPInfo, getClientIp } from '../../api'
 import { useDataLayerValue } from '../../DataLayer'
 
 import patternBG from '../../assets/images/pattern-bg.png'
@@ -28,6 +28,64 @@ const Header = () => {
 
     const toastId = React.useRef(null)
 
+    // function to fetch current device ip on component load
+    const clientIp = async () => {
+
+        if(localStorage.getItem('clientData')) {
+
+            const cachedData = JSON.parse(localStorage.getItem('clientData'))
+
+            dispatch({
+                type: 'SET_IP_DATA',
+                ip: checkIfExists(cachedData.data.ip, 'N/A'),
+                location: checkIfExists(cachedData.data.location.city, 'N/A'), 
+                timezone: checkIfExists(cachedData.data.location.timezone, 'N/A'),
+                isp: checkIfExists(cachedData.data.isp, 'N/A'),
+                lng: cachedData.data.location.lng,
+                lat: cachedData.data.location.lat,
+                domain: null
+            })
+
+            return
+        }
+
+        dispatch({
+            type: 'SET_LOADING',
+            isLoading: true
+        })
+
+        const clientIPAddress = await getClientIp()
+
+        const data = await getIPInfo(clientIPAddress)
+
+        // cache user data to prevent fetching api on each load
+        localStorage.setItem('clientData', JSON.stringify(data));
+
+
+        try {
+
+            dispatch({
+                type: 'SET_IP_DATA',
+                ip: checkIfExists(data.data.ip, 'N/A'),
+                location: checkIfExists(data.data.location.city, 'N/A'), 
+                timezone: checkIfExists(data.data.location.timezone, 'N/A'),
+                isp: checkIfExists(data.data.isp, 'N/A'),
+                lng: data.data.location.lng,
+                lat: data.data.location.lat,
+                domain: null
+            })
+
+            dispatch({
+                type: 'SET_LOADING',
+                isLoading: false
+            })
+
+        } catch (e) {
+            console.log(e.message)
+        }
+   }
+
+    // Handle data submit
     const handleSubmit = async () => {
 
         // ERROR CHECKING
@@ -70,7 +128,21 @@ const Header = () => {
 
             // Check to see which data to search by
             if(isValidDomain(searchValue)) {
+
                 const data = await getIPInfo('', searchValue)
+
+                // If there is no data, break the operation
+                if(!data) {
+                    // Set loading to false
+                    dispatch({
+                        type: 'SET_LOADING',
+                        isLoading: false
+                    })
+
+                    toast.info('Nothing found!')
+
+                    return
+                }
 
                  // set new data to the global state
                  dispatch({
@@ -86,6 +158,22 @@ const Header = () => {
 
             } else if(isIp(searchValue)) {
                 const data = await getIPInfo(searchValue, '')
+
+                console.log(data)
+
+                // If there is no data, break the operation
+                if(!data) {
+
+                    // Set loading to false
+                    dispatch({
+                        type: 'SET_LOADING',
+                        isLoading: false
+                    })
+
+                    toast.warn('Nothing found')
+
+                    return
+                }
 
                 // set new data to the global state
                 dispatch({
@@ -112,25 +200,34 @@ const Header = () => {
         }
     }
 
+    // Handle input value change
     const handleChange = (e) => {
         setSearchValue(e.target.value)
     }
     
+    // Handle input focus
     const handleFocus = (e) => {
 
         if(windowWidth >= '768') return
         setIsFocused(true)
     }
 
+    // Handle input unfocus
     const handleBlur = (e) => {
         setIsFocused(false)
     }
 
+    // Handle enter key press
     const handleKeyPress = (e) => {
         if(e.key === 'Enter') {
             handleSubmit()
         }
     }
+
+    // Set the initial data to that of a current client device ip address on component ( page load )
+    useEffect(() => {
+       clientIp()
+    }, [])
 
     return (
         <>

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
 import Lottie from 'react-lottie'
 
@@ -25,6 +25,9 @@ const Map = () => {
     const [{lng, lat, isLoading}] = useDataLayerValue()
     let position = [lat, lng];
 
+    const mapRef = useRef()
+
+
     const lottieOptions = {
         loop: true,
         autoplay: true,
@@ -41,7 +44,7 @@ const Map = () => {
                 height={'65vh'}
                 width={'100%'}
                 isClickToPauseDisabled={true}
-            /> : <div className="map__container"><MapContainer center={position} zoom={13} scrollWheelZoom={false}>
+            /> : <div className="map__container"><MapContainer whenCreated={ mapInstance => mapInstance.setView(position) } ref={mapRef} center={position} zoom={13} scrollWheelZoom={false}>
                 <TileLayer
                     attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
