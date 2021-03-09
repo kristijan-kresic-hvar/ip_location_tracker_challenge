@@ -28,6 +28,63 @@ const Header = () => {
 
     const toastId = React.useRef(null)
 
+    // function to fetch current device ip on component load
+    const clientIp = async () => {
+
+        if(localStorage.getItem('clientData')) {
+
+            const cachedData = JSON.parse(localStorage.getItem('clientData'))
+
+            dispatch({
+                type: 'SET_IP_DATA',
+                ip: checkIfExists(cachedData.data.ip, 'N/A'),
+                location: checkIfExists(cachedData.data.location.city, 'N/A'), 
+                timezone: checkIfExists(cachedData.data.location.timezone, 'N/A'),
+                isp: checkIfExists(cachedData.data.isp, 'N/A'),
+                lng: cachedData.data.location.lng,
+                lat: cachedData.data.location.lat,
+                domain: null
+            })
+
+            return
+        }
+
+        dispatch({
+            type: 'SET_LOADING',
+            isLoading: true
+        })
+
+        const clientIPAddress = await getClientIp()
+
+        const data = await getIPInfo(clientIPAddress)
+
+        // cache user data to prevent fetching api on each load
+        localStorage.setItem('clientData', JSON.stringify(data));
+
+
+        try {
+
+            dispatch({
+                type: 'SET_IP_DATA',
+                ip: checkIfExists(data.data.ip, 'N/A'),
+                location: checkIfExists(data.data.location.city, 'N/A'), 
+                timezone: checkIfExists(data.data.location.timezone, 'N/A'),
+                isp: checkIfExists(data.data.isp, 'N/A'),
+                lng: data.data.location.lng,
+                lat: data.data.location.lat,
+                domain: null
+            })
+
+            dispatch({
+                type: 'SET_LOADING',
+                isLoading: false
+            })
+
+        } catch (e) {
+            console.log(e.message)
+        }
+   }
+
     // Handle data submit
     const handleSubmit = async () => {
 
@@ -169,40 +226,6 @@ const Header = () => {
 
     // Set the initial data to that of a current client device ip address on component ( page load )
     useEffect(() => {
-       const clientIp = async () => {
-
-            dispatch({
-                type: 'SET_LOADING',
-                isLoading: true
-            })
-
-            const clientIPAddress = await getClientIp()
-
-            const data = await getIPInfo(clientIPAddress)
-
-            try {
-
-                dispatch({
-                    type: 'SET_IP_DATA',
-                    ip: checkIfExists(data.data.ip, 'N/A'),
-                    location: checkIfExists(data.data.location.city, 'N/A'), 
-                    timezone: checkIfExists(data.data.location.timezone, 'N/A'),
-                    isp: checkIfExists(data.data.isp, 'N/A'),
-                    lng: data.data.location.lng,
-                    lat: data.data.location.lat,
-                    domain: null
-                })
-
-                dispatch({
-                    type: 'SET_LOADING',
-                    isLoading: false
-                })
-
-            } catch (e) {
-                console.log(e.message)
-            }
-       }
-
        clientIp()
     }, [])
 
