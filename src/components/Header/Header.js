@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { truncate, checkIfExists } from '../../helpers'
+import { checkIfExists } from '../../helpers'
 import { getIPInfo, getClientIp } from '../../api'
 import { useDataLayerValue } from '../../DataLayer'
 import patternBG from '../../assets/images/pattern-bg.png'
@@ -7,11 +7,12 @@ import patternBG from '../../assets/images/pattern-bg.png'
 import './header.css'
 
 import Search from './Search/Search'
+import Results from './Results/Results'
 
 const Header = () => {
 
-    // extract stuff from the global state, add the dispatch action to change them afterwards
-    const [{ isLoading, ip, location, timezone, isp }, dispatch] = useDataLayerValue()
+     // extract stuff from the global state, add the dispatch action to change them afterwards
+     const [{}, dispatch] = useDataLayerValue()
 
     const [isFocused, setIsFocused] = useState(false)
      // accessibility states
@@ -96,27 +97,7 @@ const Header = () => {
                     setIsFocused={setIsFocused} 
                 />
             </div>
-            {!isFocused ? <div className="header__results">
-                <div className="header__results--ipaddress">
-                    <h3>ip address</h3>
-                    <p>{ isLoading ? 'N/A': ip }</p>
-                </div>
-
-                <div className="header__results--location">
-                    <h3>location</h3>
-                    <p>{ isLoading ? 'N/A' : location }</p>
-                </div>
-
-                <div className="header__results--timezone">
-                    <h3>timezone</h3>
-                    <p>{ isLoading ? 'N/A' : timezone }</p>
-                </div>
-
-                <div className="header__results--isp">
-                    <h3>isp</h3>
-                    <p>{ isLoading ? 'N/A' : truncate(isp, 30) }</p>
-                </div>
-            </div> : '' }
+            {!isFocused ? <Results /> : '' }
         </header>
         </>
     )
