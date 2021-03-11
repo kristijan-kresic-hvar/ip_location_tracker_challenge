@@ -13,6 +13,7 @@ function App() {
 
   const [isLandscape, setIsLandscape] = useState(false)
 
+  // check if user device is a phone and its orientatio is in a landscape mode
   const checkIfLandscape = () => {
     if(window.screen.availWidth > window.screen.availHeight && checkIfMobile(navigator.userAgent || navigator.vendor || window.opera)) {
       setIsLandscape(true)
@@ -23,27 +24,26 @@ function App() {
 
   useEffect(() => {
 
-    // Check for orientation immediataly
+    // check if landscape on first load
     checkIfLandscape()
 
-    // check for landscape when user resizes their window ( browser )
-    window.addEventListener('resize', () => {
-      checkIfLandscape()
-    })
-  }, [])
+   // check for landscape when user resizes their window ( browser )
+   window.addEventListener('resize', () => {
+    checkIfLandscape()
+  })
+  
+  }, [isLandscape])
 
   return (
-    <div className="app">
-      <Header />
-      <Map />
-
-      {/* if the screen is rotated in landscape mode */}
-      {isLandscape && <RotateAlert />}
-
-      {/* error handler component */}
-      <ToastAlert />
-    </div>
-  );
+      <div className="app">
+          {/* if the screen is rotated in landscape mode */}
+          { isLandscape && <RotateAlert />}
+          <Header />
+          <Map />
+          {/* error handler component */}
+          <ToastAlert />
+      </div>
+  )
 }
 
 export default App;
