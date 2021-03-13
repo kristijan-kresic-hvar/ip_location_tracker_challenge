@@ -6,7 +6,7 @@
 
 :root {
     --very-dark-grey: hsl(0, 0%, 17%);
-    --dark-grey: hsl(0, 0%, 59%);
+    --dark-grey: hsl(0, 1%, 50%);
 }
 
 html {

@@ -156,8 +156,8 @@ const Search = (props) => {
 
     return (
         <div className="header__searchwrap">
-            <input onKeyPress={handleKeyPress} onBlur={handleBlur} onFocus={handleFocus} onChange={handleChange} type="text" placeholder="Search for any IP Address or Domain" required />
-            <button onClick={() => handleSubmit()}>
+            <input name="q" onKeyPress={handleKeyPress} onBlur={handleBlur} onFocus={handleFocus} onChange={handleChange} type="text" placeholder="Search for any IP Address or Domain" required />
+            <button aria-label="Search"name="search" onClick={() => handleSubmit()}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="11" height="14"><path fill="none" stroke="#FFF" strokeWidth="3" d="M2 1l6 6-6 6"/></svg>
             </button>
         </div>
