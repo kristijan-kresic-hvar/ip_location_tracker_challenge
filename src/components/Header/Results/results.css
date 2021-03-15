@@ -1,6 +1,6 @@
 .header__results {
     width: 80%;
-    max-width: 1500px;
+    max-width: 2048px;
     padding: 1.5rem;
     z-index: 2;
     position: absolute;
@@ -55,3 +55,14 @@
     }
 }
 
+@media only screen  and (min-width: 1824px) {
+    .header__results {
+        padding: 2.2rem;
+    }
+}
+
+@media only screen  and (min-width: 2048px) {
+    .header__results {
+        padding: 2.6rem;
+    }
+}

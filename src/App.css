@@ -39,3 +39,15 @@ body, html {
         overflow: auto;
     }
 }
+
+@media only screen  and (min-width: 1824px) {
+    html {
+        font-size: 25px;
+    }
+}
+
+@media only screen  and (min-width: 2048px) {
+    html {
+        font-size: 30px;
+    }
+}
