@@ -1,6 +1,6 @@
 import React from 'react'
 
-import alertBG from '../../../assets/images/rotate_alert.png'
+import alertBG from '../../../assets/images/rotate_alert.webp'
 
 import './rotatealert.css'
 

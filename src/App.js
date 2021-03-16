@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, Suspense } from 'react'
 
 import './App.css';
 
@@ -6,8 +6,10 @@ import { checkIfMobile } from './helpers/index'
 
 import Header from './components/Header/Header'
 import Map from './components/Map/Map'
-import RotateAlert from './components/Alerts/RotateAlert/RotateAlert'
-import ToastAlert from './components/Alerts/ToastAlert/ToastAlert'
+
+// Code split the components that are not rendered immediately (used to save on initial size and therefore lower the bundle size)
+const RotateAlert = React.lazy(() => import('./components/Alerts/RotateAlert/RotateAlert'))
+const ToastAlert = React.lazy(() => import('./components/Alerts/ToastAlert/ToastAlert'))
 
 function App() {
 
@@ -36,12 +38,14 @@ function App() {
 
   return (
       <div className="app">
-          {/* if the screen is rotated in landscape mode */}
-          { isLandscape && <RotateAlert />}
           <Header />
           <Map />
           {/* error handler component */}
-          <ToastAlert />
+          <Suspense fallback={<p>loading...</p>}>
+            {/* if the screen is rotated in landscape mode */}
+            { isLandscape && <RotateAlert />}
+            <ToastAlert />
+          </Suspense> 
       </div>
   )
 }

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { checkIfExists } from '../../helpers'
 import { getIPInfo, getClientIp } from '../../api'
 import { useDataLayerValue } from '../../DataLayer'
-import patternBG from '../../assets/images/pattern-bg.png'
+import patternBG from '../../assets/images/pattern-bg.webp'
 
 import './header.css'
 
